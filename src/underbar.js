@@ -102,26 +102,46 @@
   };
 
   // Produce a duplicate-free version of the array.
+  // _.uniq = function(array, isSorted, iterator) {
+  //   var numbers = {};
+  //   var arr = [];
+  //   if (iterator) {
+  //     console.log(iterator)
+  //     for (var i = 0; i < array.length; i++) {
+  //       if(!numbers[iterator(array[i])]) {
+  //         numbers[iterator(array[i])] = iterator(array[i]);
+  //         arr.push(array[i]);
+  //       }
+  //     }
+  //   } else {
+  //     for (var i = 0; i < array.length; i++) {
+  //       if(!numbers[array[i]]) {
+  //         numbers[array[i]] = array[i];
+  //         arr.push(array[i]);
+  //       }
+  //     }
+  //   }
+  //   return arr;
+  // };
   _.uniq = function(array, isSorted, iterator) {
-    var numbers = {};
-    var arr = [];
+    var uniqObj = {};
+    var result = []
     if (iterator) {
-      console.log(iterator)
       for (var i = 0; i < array.length; i++) {
-        if(!numbers[iterator(array[i])]) {
-          numbers[iterator(array[i])] = iterator(array[i]);
-          arr.push(array[i]);
+        if (uniqObj[iterator(array[i])] === undefined) {
+          uniqObj[iterator(array[i])] = iterator(array[i]);
+          result.push(array[i]);
         }
       }
     } else {
       for (var i = 0; i < array.length; i++) {
-        if(!numbers[array[i]]) {
-          numbers[array[i]] = array[i];
-          arr.push(array[i]);
+        if (!uniqObj[(array[i])]) {
+          uniqObj[array[i]] = array[i];
+          result.push(array[i]);
         }
       }
     }
-    return arr;
+    return result;
   };
 
 
@@ -177,7 +197,7 @@
   //          No accumulator is given so the first element is used.
   _.reduce = function(collection, iterator, accumulator) {
     var start = 0;
-    if (!accumulator) {
+    if (accumulator === undefined) {
       accumulator = collection[0];
       start = 1;
     }
@@ -209,6 +229,15 @@
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
     // TIP: Try re-using reduce() here.
+    //return _.reduce(collection, function())
+    iterator = iterator || _.identity;
+      for (var i = 0; i < collection.length; i++) {
+        if (!iterator(collection[i])) {
+          return false;
+        }
+      }
+    return true;
+
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
