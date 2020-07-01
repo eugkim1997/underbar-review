@@ -237,13 +237,19 @@
         }
       }
     return true;
-
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
   // provided, provide a default one
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
+    iterator = iterator || _.identity;
+    for (var i = 0; i < collection.length; i++) {
+      if (iterator(collection[i])) {
+        return true;
+      }
+    }
+  return false;
   };
 
 
@@ -266,11 +272,25 @@
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
   _.extend = function(obj) {
+    for( var i = 1 ; i < arguments.length; i++) {
+      for ( var key in arguments[i]) {
+          obj[key] = arguments[i][key];
+      }
+    }
+    return obj;
   };
 
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
   _.defaults = function(obj) {
+    for( var i = 1 ; i < arguments.length; i++) {
+      for ( var key in arguments[i]) {
+        if (obj[key]=== undefined) {
+          obj[key] = arguments[i][key];
+        }
+      }
+    }
+    return obj;
   };
 
 
@@ -314,6 +334,16 @@
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
+    var results = {};
+    return function() {
+      var key = JSON.stringify(arguments);
+      if (results[key] !== undefined) {
+        return results[key];
+      } else {
+        results[key] = func.apply(this, arguments);
+        return results[key];
+      }
+    }
   };
 
   // Delays a function for the given number of milliseconds, and then calls
@@ -323,6 +353,7 @@
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
+    setTimeout.apply(this, arguments);
   };
 
 
@@ -337,6 +368,14 @@
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
+    var copy = array.slice();
+    var shuffled = [];
+    while (copy.length !== 0) {
+      var n = Math.floor(Math.random() * copy.length);
+      shuffled.push(copy[n]);
+      copy.splice(n,1);
+    }
+    return shuffled;
   };
 
 
